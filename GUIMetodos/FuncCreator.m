@@ -2,8 +2,8 @@
 clear all;close all;clc
 %Varia Zt en los diferentes rangos y obtendras las fiferentes respuestas
 %con el ruido que quieras
-wn=1;           zt=0.5;         SNR=1000;       long=10;
-n=[0 0 wn^2];   d=[1 2*zt*wn wn^2 0];
+wn=10;           zt=0.5;         SNR=1000;       long=20;
+n=[0 0 wn^2];   d=[1 2*zt*wn wn^2];
 Ht=tf(n,d);
 %step(Ht)
 syms x t

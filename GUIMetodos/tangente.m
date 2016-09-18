@@ -1,5 +1,7 @@
-function  [Gps,tm,tau,Kp,err,u,iii] = tangente(sig,time,tol)
+function  [Gps,tm,tau,Kp,err,u,iii] = tangente(sig,time)
+disp(time)
 y=sig; xi=time;
+
 h=abs(xi(end)-xi(1))/length(xi);
 yp=diff(y)/h;               %Primera derivada 
 %  hold on ;grid on 
