@@ -22,16 +22,16 @@ function varargout = Punto_3(varargin)
 
 % Edit the above text to modify the response to help Punto_3
 
-% Last Modified by GUIDE v2.5 17-Sep-2016 19:07:58
+% Last Modified by GUIDE v2.5 18-Sep-2016 01:26:05
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
-                   'gui_Singleton',  gui_Singleton, ...
-                   'gui_OpeningFcn', @Punto_3_OpeningFcn, ...
-                   'gui_OutputFcn',  @Punto_3_OutputFcn, ...
-                   'gui_LayoutFcn',  [] , ...
-                   'gui_Callback',   []);
+    'gui_Singleton',  gui_Singleton, ...
+    'gui_OpeningFcn', @Punto_3_OpeningFcn, ...
+    'gui_OutputFcn',  @Punto_3_OutputFcn, ...
+    'gui_LayoutFcn',  [] , ...
+    'gui_Callback',   []);
 if nargin && ischar(varargin{1})
     gui_State.gui_Callback = str2func(varargin{1});
 end
@@ -70,7 +70,7 @@ old0units = get(0, 'Units');
 
 
 % --- Outputs from this function are returned to the command line.
-function varargout = Punto_3_OutputFcn(hObject, eventdata, handles) 
+function varargout = Punto_3_OutputFcn(hObject, eventdata, handles)
 % varargout  cell array for returning output args (see VARARGOUT);
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -85,35 +85,35 @@ function Abrir_Callback(hObject, eventdata, handles)
 % hObject    handle to Abrir (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-global Tp x ts;
+hold off
+global Tp x ts tol;
 [signal,ex] = uigetfile('*.mat','Select the MATLAB file');
-    if (signal ~= 0)
-        S1=load([ex signal]);
-        ts=S1.Signal(1,:);
-        x=S1.Signal(2,:);
-        plot(ts,x);
-        
+if (signal ~= 0)
+    S1=load([ex signal]);
+    ts=S1.Signal(1,:);
+    x=S1.Signal(2,:);
+    plot(ts,x,'r');
+    legend('Señal ingresada')
+    %Validamos el tipo de sistema
+    tol=str2double(get(handles.tol,'String'));
+    Tipo = ID(S1.Signal(2,1:end),tol);
+    set(handles.Tipo, 'String', Tipo)
+    a = 'Métodos de tres puntos: Jahanmiri';
+    b = 'Métodos de dos puntos: Ho, Smith';
+    c = 'Métodos de la tangente:Ziegler y Nichols';
+    
+    switch Tipo
+        case 'El sistema es subamortiguado'
+            xo = {a;' ';' '};
+            set(handles.Lista,'string',xo)
+            Tp = 1;
+        case 'El sistema es sobreamortiguado'
+            xo = {a; b;c};
+            set(handles.Lista,'string',xo)
+            Tp=0;
+            
     end
-%Validamos el tipo de sistema
-tol=str2double(get(handles.tol,'String'));
- Tipo = ID(S1.Signal(2,1:end),tol);
- set(handles.Tipo, 'String', Tipo) 
- a = 'Métodos de tres puntos: Jahanmiri';
- b = 'Métodos de dos puntos: Ho, Smith';
- c = 'Métodos de la tangente:Ziegler y Nichols';
- 
- switch Tipo
-   case 'El sistema es subamortiguado'        
-        xo = {a;' ';' '};
-        set(handles.Lista,'string',xo)
-        Tp = 1;
-   case 'El sistema es sobreamortiguado'
-        xo = {a; b;c};
-        set(handles.Lista,'string',xo)
-        Tp=0;
-        
- end
- 
+end
 function Tipo_Callback(hObject, eventdata, handles)
 % hObject    handle to Tipo (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -164,63 +164,69 @@ function Aproximar_Callback(hObject, eventdata, handles)
 % hObject    handle to Aproximar (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-global Tp x ts;
+% coloar informacion en pop - ap menú
+a1='Señal de entrada ';
+b1='Señal de entrada con señal aproximada ';
+c1='Señal de entrada con puntos  detectados para aproximación  ';
+aa={a1;b1;c1};
+set(handles.popupmenu1, 'String', aa);
+global Tp x ts Gm1 tol u iii Mtdo;
 Mtdo = get(handles.Lista,'Value');
 file_list = get(handles.Lista,'String');
 disp(file_list(Mtdo))
- switch Mtdo
-   case 1
+switch Mtdo
+    case 1
         if Tp == 1
-        %Jahanmiri sub
-        clear Gm tm tau Kp s
-        [Gm,tm,tau,Kp,err]=jahanmiri_sub(x,ts); 
-        syms s;
-        num=strcat(char(vpa(poly2sym(Gm.num{1,1},s),3)),'*exp(-',num2str(Gm.OutputDelay),'*s)');
-        bar=strcat('-------------------------');
-        deno=strcat(char(vpa(poly2sym(Gm.den{1,1},s),3)));
-        TF={num;bar;deno}; %función de transferencia(String)
-        set(handles.tfs,'String',TF);
-        a=strcat('Tm:  ',' ',num2str(tm));
-        b=strcat('tau: ',' ',num2str(tau));
-        c=strcat('Kp: ',' ',num2str(Kp));
-        d=strcat('Error(IAE): ',' ',num2str(err));
-        xo = {a;b;c;d};
-        set(handles.param,'string',xo)
+            %Jahanmiri sub
+            clear Gm tm tau Kp s
+            [Gm,tm,tau,Kp,err]=jahanmiri_sub(x,ts);Gm1=Gm;
+            syms s;
+            num=strcat(char(vpa(poly2sym(Gm.num{1,1},s),3)),'*exp(-',num2str(Gm.OutputDelay),'*s)');
+            bar=strcat('-------------------------');
+            deno=strcat(char(vpa(poly2sym(Gm.den{1,1},s),3)));
+            TF={num;bar;deno}; %función de transferencia(String)
+            set(handles.tfs,'String',TF);
+            a=strcat('Tm:  ',' ',num2str(tm));
+            b=strcat('tau: ',' ',num2str(tau));
+            c=strcat('Kp: ',' ',num2str(Kp));
+            d=strcat('Error(IAE): ',' ',num2str(err));
+            xo = {a;b;c;d};
+            set(handles.param,'string',xo)
         elseif Tp == 0
-        %Jahanmiri sobre
-        if length(x) == length(ts)
-        [Gm,tm,tau,Kp,err,cri] = jahanmiri_sobre(x,ts); 
-        syms s;
-        num=strcat(char(vpa(poly2sym(Gm.num{1,1},s),3)),'*exp(-',num2str(Gm.OutputDelay),'*s)');
-        bar=strcat('-------------------------');
-        deno=strcat(char(vpa(poly2sym(Gm.den{1,1},s),3)));
-        TF={num;bar;deno}; %función de transferencia(String)
-        set(handles.tfs,'String',TF);
-        a=strcat('Tm:  ',' ',num2str(tm));
-        b=strcat('tau: ',' ',num2str(tau));
-        c=strcat('Kp: ',' ',num2str(Kp));
-        d=strcat('Error(IAE): ',' ',num2str(err));
-        xo = {a;b;c;d};
-        set(handles.param,'string',xo)
-        disp(err)
-        disp(cri)
-        else
-            disp('fas')
-        end 
+            %Jahanmiri sobre
+            if length(x) == length(ts)
+                [Gm,tm,tau,Kp,err,cri] = jahanmiri_sobre(x,ts);Gm1=Gm;
+                syms s;
+                num=strcat(char(vpa(poly2sym(Gm.num{1,1},s),3)),'*exp(-',num2str(Gm.OutputDelay),'*s)');
+                bar=strcat('-------------------------');
+                deno=strcat(char(vpa(poly2sym(Gm.den{1,1},s),3)));
+                TF={num;bar;deno}; %función de transferencia(String)
+                set(handles.tfs,'String',TF);
+                a=strcat('Tm:  ',' ',num2str(tm));
+                b=strcat('tau: ',' ',num2str(tau));
+                c=strcat('Kp: ',' ',num2str(Kp));
+                d=strcat('Error(IAE): ',' ',num2str(err));
+                xo = {a;b;c;d};
+                set(handles.param,'string',xo)
+                disp(err)
+                disp(cri)
+            else
+                disp('fas')
+            end
         end
-   case 2
-         if Tp == 1    
-        %Ho Sub
-        clear Hprox tm tau Kp s
+    case 2
+        if Tp == 1
+            %Ho Sub
+            clear Hprox tm tau Kp s
         elseif Tp == 0
-        %Ho sobre
-        clear Gm tm tau Kp s
+            %Ho sobre
+            clear Gm tm tau Kp s
         end
-     
-   case 3
+        
+    case 3
         %tangente sobre
         clear Gm tm tau Kp s
-        [Gm,tm,tau,Kp,err]=tangente(x,ts);
+        [Gm,tm,tau,Kp,err,u,iii]=tangente(x,ts,tol);Gm1=Gm;
         syms s;
         num=strcat(char(vpa(poly2sym(Gm.num{1,1},s),3)),'*exp(-',num2str(Gm.OutputDelay),'*s)');
         bar=strcat('-------------------------');
@@ -232,9 +238,9 @@ disp(file_list(Mtdo))
         c=strcat('Kp: ',' ',num2str(Kp));
         d=strcat('Error(IAE): ',' ',num2str(err));
         xo = {a;b;c;d};
-        set(handles.param,'string',xo)
-         
- end
+        set(handles.param,'string',xo) 
+end
+
 
 function tol_Callback(hObject, eventdata, handles)
 % hObject    handle to tol (see GCBO)
@@ -281,6 +287,7 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
+
 % --- Executes on selection change in param.
 function param_Callback(hObject, eventdata, handles)
 % hObject    handle to param (see GCBO)
@@ -324,4 +331,47 @@ function tfs_CreateFcn(hObject, eventdata, handles)
 %       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on button press in Graf.
+function Graf_Callback(hObject, eventdata, handles)
+% hObject    handle to Graf (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+b = get(handles.popupmenu1, 'Value');
+global Gm1 ts x u iii Mtdo
+switch b
+    case 1
+        hold off
+        plot(ts,x,'r')
+         legend('Señal ingresada')
+       
+    case 2
+        hold off
+        plot(ts,x,'r');hold on
+        step(Gm1)
+        legend('Señal ingresada','Señal aproximada ')
+    case 3
+        if Mtdo==1
+        hold off
+        plot(ts,x,'r');hold on
+        %Agregar los puntos detectados en el metodo 
+        legend('Señal ingresada')
+        end
+        if Mtdo==2
+        hold off
+        plot(ts,x,'r');hold on
+        %Agregar los puntos detectados en el metodo 
+        legend('Señal ingresada')
+        end
+        if Mtdo==3
+        hold off
+        plot(ts,x,'r');hold on
+        plot(ts(1:end-2),u,'g');hold on 
+        plot(ts(iii),x(iii),'ok')
+        ylim([-0.1 x(end)+0.1])
+        legend('Señal ingresada','Recta tangente','Punto de Inflexión')
+        end
+        
 end
