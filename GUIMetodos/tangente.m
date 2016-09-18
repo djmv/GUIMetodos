@@ -1,4 +1,4 @@
-function  [Gps,tm,tau,Kp,err] = tangente(sig,time)
+function  [Gps,tm,tau,Kp,err,u,iii] = tangente(sig,time,tol)
 y=sig; xi=time;
 h=abs(xi(end)-xi(1))/length(xi);
 yp=diff(y)/h;               %Primera derivada 
@@ -20,15 +20,11 @@ for i=1:1:length(ypp)
     end
 end
 %%
+iii=i;
 m=yp(i);
 k=y(i)-m*infle;
 u = m.*(xi(1:end-2))+ k;
-% hold on 
-% plot(xi(1:end-2),u,'k')
-% hold on 
-% plot(xi(i),y(i),'ok')
-% ylim([-0.1 y(end)+0.1])
-% hold off
+
 
 %% Tiempo muerto 
 tolinflex=0.008;
