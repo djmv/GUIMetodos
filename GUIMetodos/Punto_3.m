@@ -22,7 +22,7 @@ function varargout = Punto_3(varargin)
 
 % Edit the above text to modify the response to help Punto_3
 
-% Last Modified by GUIDE v2.5 17-Sep-2016 19:07:58
+% Last Modified by GUIDE v2.5 18-Sep-2016 08:28:45
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -164,7 +164,7 @@ function Aproximar_Callback(hObject, eventdata, handles)
 % hObject    handle to Aproximar (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-global Tp x ts;
+global Tp x ts Gm;
 Mtdo = get(handles.Lista,'Value');
 file_list = get(handles.Lista,'String');
 disp(file_list(Mtdo))
@@ -200,7 +200,8 @@ disp(file_list(Mtdo))
         b=strcat('tau: ',' ',num2str(tau));
         c=strcat('Kp: ',' ',num2str(Kp));
         d=strcat('Error(IAE): ',' ',num2str(err));
-        xo = {a;b;c;d};
+        e=strcat('Criterio tm: ',' ',num2str(cri),'%');
+        xo = {a;b;c;d;e};
         set(handles.param,'string',xo)
         disp(err)
         disp(cri)
@@ -279,6 +280,7 @@ function popupmenu1_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+set(hObject, 'String', {'Función Aproximada', 'Función Real', 'Real Vs Aproximada'});
 
 
 % --- Executes on selection change in param.
@@ -324,4 +326,30 @@ function tfs_CreateFcn(hObject, eventdata, handles)
 %       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on button press in pushbutton3.
+function pushbutton3_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton3 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global Tp x ts Gm;
+axes(handles.Signal);
+cla;
+popup_sel_index = get(handles.popupmenu1, 'Value');
+switch popup_sel_index
+    case 1
+        ya=step(Gm,ts);
+        plot(ts,ya);
+        title('Función Aproximada')
+    case 2
+        plot(ts,x);
+        title('Función Real');
+    case 3
+        yr=step(Gm,ts);
+        hold on
+        plot(ts,x,'R',ts,yr,'-.b')
+        title('Real Vs Aproximada');
+        hleg1 = legend('Real','Aproximada');
 end
