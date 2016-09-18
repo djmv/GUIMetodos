@@ -1,4 +1,4 @@
-function  [Gps,tm,tau,Kp] = tangente(sig,time)
+function  [Gps,tm,tau,Kp,err] = tangente(sig,time)
 y=sig; xi=time;
 h=abs(xi(end)-xi(1))/length(xi);
 yp=diff(y)/h;               %Primera derivada 
@@ -56,4 +56,8 @@ Kp=y(end);
 %% Funcion en el tiempo aproximada 
 s=tf('s');
 Gps=(Kp*exp(-Tm*s))/(tou*s + 1);
+%% Criterio de Error
+y1=step(Gps,xi);
+iae=trapz(xi,abs(y-y1'));
+err=iae;%Criterio de Error
 end

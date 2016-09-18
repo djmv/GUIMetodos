@@ -172,28 +172,66 @@ disp(file_list(Mtdo))
    case 1
         if Tp == 1
         %Jahanmiri sub
+        clear Gm tm tau Kp s
+        [Gm,tm,tau,Kp,err]=jahanmiri_sub(x,ts); 
+        syms s;
+        num=strcat(char(vpa(poly2sym(Gm.num{1,1},s),3)),'*exp(-',num2str(Gm.OutputDelay),'*s)');
+        bar=strcat('-------------------------');
+        deno=strcat(char(vpa(poly2sym(Gm.den{1,1},s),3)));
+        TF={num;bar;deno}; %función de transferencia(String)
+        set(handles.tfs,'String',TF);
+        a=strcat('Tm:  ',' ',num2str(tm));
+        b=strcat('tau: ',' ',num2str(tau));
+        c=strcat('Kp: ',' ',num2str(Kp));
+        d=strcat('Error(IAE): ',' ',num2str(err));
+        xo = {a;b;c;d};
+        set(handles.param,'string',xo)
         elseif Tp == 0
         %Jahanmiri sobre
+        if length(x) == length(ts)
+        [Gm,tm,tau,Kp,err,cri] = jahanmiri_sobre(x,ts); 
+        syms s;
+        num=strcat(char(vpa(poly2sym(Gm.num{1,1},s),3)),'*exp(-',num2str(Gm.OutputDelay),'*s)');
+        bar=strcat('-------------------------');
+        deno=strcat(char(vpa(poly2sym(Gm.den{1,1},s),3)));
+        TF={num;bar;deno}; %función de transferencia(String)
+        set(handles.tfs,'String',TF);
+        a=strcat('Tm:  ',' ',num2str(tm));
+        b=strcat('tau: ',' ',num2str(tau));
+        c=strcat('Kp: ',' ',num2str(Kp));
+        d=strcat('Error(IAE): ',' ',num2str(err));
+        xo = {a;b;c;d};
+        set(handles.param,'string',xo)
+        disp(err)
+        disp(cri)
+        else
+            disp('fas')
+        end 
         end
    case 2
-         if Tp == 1
+         if Tp == 1    
         %Ho Sub
+        clear Hprox tm tau Kp s
         elseif Tp == 0
         %Ho sobre
+        clear Gm tm tau Kp s
         end
      
    case 3
         %tangente sobre
-        
-        [Haprox,tm,tau,Kp]=tangente(x,ts);
-        s=evalc('Haprox');
-        idx = findstr(s,sprintf('\n'));
-        s = s(idx(3)+1:idx(end-3));   
-        set(handles.tfs,'String',s);
+        clear Gm tm tau Kp s
+        [Gm,tm,tau,Kp,err]=tangente(x,ts);
+        syms s;
+        num=strcat(char(vpa(poly2sym(Gm.num{1,1},s),3)),'*exp(-',num2str(Gm.OutputDelay),'*s)');
+        bar=strcat('-------------------------');
+        deno=strcat(char(vpa(poly2sym(Gm.den{1,1},s),3)));
+        TF={num;bar;deno}; %función de transferencia(String)
+        set(handles.tfs,'String',TF);
         a=strcat('Tm:  ',' ',num2str(tm));
         b=strcat('tau: ',' ',num2str(tau));
         c=strcat('Kp: ',' ',num2str(Kp));
-         xo = {a;b;c};
+        d=strcat('Error(IAE): ',' ',num2str(err));
+        xo = {a;b;c;d};
         set(handles.param,'string',xo)
          
  end
