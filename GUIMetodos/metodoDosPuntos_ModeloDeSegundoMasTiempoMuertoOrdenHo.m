@@ -31,6 +31,7 @@ if(tm<0)
     
     errordlg('Tiempo muerto negativo, no se puede aplicar el método de Ho con polo doble');
     Gm=1;tau=1;Kp=1;err=0;
+    
 else
     Gp_Ho2 = exp(-tm*s)/(tao*s+1)^2;
     %step(Gp_Ho2);

@@ -180,6 +180,7 @@ switch Mtdo
     case 1
         if Tp == 1
             %Jahanmiri sub
+            cla
             clear Gm tm tau Kp s xo
             [Gm,tm,tau,Kp,err]=jahanmiri_sub(x,ts);Gm1=Gm;
             syms s;
@@ -196,6 +197,7 @@ switch Mtdo
             set(handles.param,'string',xo)
         elseif Tp == 0
             %Jahanmiri sobre
+                cla
                 clear Gm tm tau Kp s xo
             if length(x) == length(ts)
                 [Gm,tm,tau,Kp,err,cri] = jahanmiri_sobre(x,ts);Gm1=Gm;
@@ -220,6 +222,7 @@ switch Mtdo
     case 2
             %Modelo de primer orden de smith
             clear Gm tm tau Kp s xo
+            cla
             [Gm,tm,tau,t28,t63,Kp,err] = metodoDosPuntos_ModeloDePrimerOrdenDeSmith(x,ts);Gm1=Gm;
             syms s;
             num=strcat(char(vpa(poly2sym(Gm.num{1,1},s),3)),'*exp(-',num2str(Gm.OutputDelay),'*s)');
@@ -235,7 +238,8 @@ switch Mtdo
             f=strcat('Error(IAE): ',' ',num2str(err));
             xo = {a;b;c;d;e;f};
             set(handles.param,'string',xo) 
-    case 3
+    case 3  
+            cla
             clear Gm tm tau Kp s xo
             [Gm,tm,tau,Kp,err] = metodoDosPuntos_ModeloDePrimerOrdenHo(x,ts);Gm1=Gm;
             syms s;
@@ -253,9 +257,11 @@ switch Mtdo
             disp('tm: ');disp(tm);
     case 4
             clear Gm tm tau Kp s xo
+            cla
             [Gm,t1,t2,tm,tau,Kp,err,rr] = metodoDosPuntos_ModeloDeSegundoMasTiempoMuertoOrdenHo(x,ts);
                 set(handles.tfs,'String','   ');
                 set(handles.param,'string',{'Tm < 0','  '})
+                
             if rr==0
                 Gm1=Gm;
                 syms s;
@@ -275,6 +281,7 @@ switch Mtdo
             end
     case 5
         %tangente sobre
+        cla
         clear Gm tm tau Kp s
         [Gm,tm,tau,Kp,err,u,iii]=tangente(x,ts);
         Gm1=Gm;
