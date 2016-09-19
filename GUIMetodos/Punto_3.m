@@ -22,7 +22,7 @@ function varargout = Punto_3(varargin)
 
 % Edit the above text to modify the response to help Punto_3
 
-% Last Modified by GUIDE v2.5 18-Sep-2016 01:26:05
+% Last Modified by GUIDE v2.5 19-Sep-2016 11:58:51
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -93,16 +93,16 @@ if (signal ~= 0)
     ts=S1.Signal(1,:);
     x=S1.Signal(2,:);
     plot(ts,x,'r');
-    legend('Señal ingresada')
+    legend('Seï¿½al ingresada')
     %Validamos el tipo de sistema
     tol=str2double(get(handles.tol,'String'));
     Tipo = ID(S1.Signal(2,1:end),tol);
     set(handles.Tipo, 'String', Tipo)
-    a = 'Métodos de tres puntos: Jahanmiri';
-    b = 'Métodos de dos puntos: Modelo de primer orden de smith';
-    c = 'Métodos de dos puntos: Modelo de primer orden-Ho';
-    d = 'Métodos de dos puntos: Modelo de segundo más tiempo muerto orden-Ho';
-    e = 'Métodos de la tangente:Ziegler y Nichols';
+    a = 'Mï¿½todos de tres puntos: Jahanmiri';
+    b = 'Mï¿½todos de dos puntos: Modelo de primer orden de smith';
+    c = 'Mï¿½todos de dos puntos: Modelo de primer orden-Ho';
+    d = 'Mï¿½todos de dos puntos: Modelo de segundo mï¿½s tiempo muerto orden-Ho';
+    e = 'Mï¿½todos de la tangente:Ziegler y Nichols';
     
     switch Tipo
         case 'El sistema es subamortiguado'
@@ -166,13 +166,13 @@ function Aproximar_Callback(hObject, eventdata, handles)
 % hObject    handle to Aproximar (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-% coloar informacion en pop - ap menú
-a1='Señal de entrada ';
-b1='Señal de entrada con señal aproximada ';
-c1='Señal de entrada con puntos  detectados para aproximación  ';
+% coloar informacion en pop - ap menï¿½
+a1='Seï¿½al de entrada ';
+b1='Seï¿½al de entrada con seï¿½al aproximada ';
+c1='Seï¿½al de entrada con puntos  detectados para aproximaciï¿½n  ';
 aa={a1;b1;c1};
 set(handles.popupmenu1, 'String', aa);
-global Tp x ts Gm1 tol u iii Mtdo;
+global Tp x ts Gm1  u iii Mtdo pos1 pos11 pos111 pos2 pos22 pos222;
 Mtdo = get(handles.Lista,'Value');
 file_list = get(handles.Lista,'String');
 disp(file_list(Mtdo))
@@ -187,7 +187,7 @@ switch Mtdo
             num=strcat(char(vpa(poly2sym(Gm.num{1,1},s),3)),'*exp(-',num2str(Gm.OutputDelay),'*s)');
             bar=strcat('-------------------------');
             deno=strcat(char(vpa(poly2sym(Gm.den{1,1},s),3)));
-            TF={num;bar;deno}; %función de transferencia(String)
+            TF={num;bar;deno}; %funciï¿½n de transferencia(String)
             set(handles.tfs,'String',TF);
             a=strcat('Tm:  ',' ',num2str(tm));
             b=strcat('tau: ',' ',num2str(tau));
@@ -205,7 +205,7 @@ switch Mtdo
                 num=strcat(char(vpa(poly2sym(Gm.num{1,1},s),3)),'*exp(-',num2str(Gm.OutputDelay),'*s)');
                 bar=strcat('-------------------------');
                 deno=strcat(char(vpa(poly2sym(Gm.den{1,1},s),3)));
-                TF={num;bar;deno}; %función de transferencia(String)
+                TF={num;bar;deno}; %funciï¿½n de transferencia(String)
                 set(handles.tfs,'String',TF);
                 a=strcat('Tm:  ',' ',num2str(tm));
                 b=strcat('tau: ',' ',num2str(tau));
@@ -221,14 +221,14 @@ switch Mtdo
         end
     case 2
             %Modelo de primer orden de smith
-            clear Gm tm tau Kp s xo
+            clear Gm tm tau Kp s xo 
             cla
-            [Gm,tm,tau,t28,t63,Kp,err] = metodoDosPuntos_ModeloDePrimerOrdenDeSmith(x,ts);Gm1=Gm;
+            [Gm,tm,tau,t28,t63,pos1,pos2,Kp,err] = metodoDosPuntos_ModeloDePrimerOrdenDeSmith(x,ts);Gm1=Gm;
             syms s;
             num=strcat(char(vpa(poly2sym(Gm.num{1,1},s),3)),'*exp(-',num2str(Gm.OutputDelay),'*s)');
             bar=strcat('-------------------------');
             deno=strcat(char(vpa(poly2sym(Gm.den{1,1},s),3)));
-            TF={num;bar;deno}; %función de transferencia(String)
+            TF={num;bar;deno}; %funciï¿½n de transferencia(String)
             set(handles.tfs,'String',TF);
             a=strcat('Tm:  ',' ',num2str(tm));
             b=strcat('tau: ',' ',num2str(tau));
@@ -241,24 +241,26 @@ switch Mtdo
     case 3  
             cla
             clear Gm tm tau Kp s xo
-            [Gm,tm,tau,Kp,err] = metodoDosPuntos_ModeloDePrimerOrdenHo(x,ts);Gm1=Gm;
+            [Gm,tm,t1,t2,pos11,pos22,tau,Kp,err] = metodoDosPuntos_ModeloDePrimerOrdenHo(x,ts);Gm1=Gm;
             syms s;
             num=strcat(char(vpa(poly2sym(Gm.num{1,1},s),3)),'*exp(-',num2str(Gm.OutputDelay),'*s)');
             bar=strcat('-------------------------');
             deno=strcat(char(vpa(poly2sym(Gm.den{1,1},s),3)));
-            TF={num;bar;deno}; %función de transferencia(String)
+            TF={num;bar;deno}; %funciï¿½n de transferencia(String)
             set(handles.tfs,'String',TF);
             a=strcat('Tm:  ',' ',num2str(tm));
             b=strcat('tau: ',' ',num2str(tau));
             c=strcat('Kp: ',' ',num2str(Kp));
+            e=strcat('t1: ',' ',num2str(t1));
+            d=strcat('t2: ',' ',num2str(t2));
             f=strcat('Error(IAE): ',' ',num2str(err));
-            xo = {a;b;c;f};
+            xo = {a;b;c;d;e;f};
             set(handles.param,'string',xo)
             disp('tm: ');disp(tm);
     case 4
             clear Gm tm tau Kp s xo
             cla
-            [Gm,t1,t2,tm,tau,Kp,err,rr] = metodoDosPuntos_ModeloDeSegundoMasTiempoMuertoOrdenHo(x,ts);
+            [Gm,t1,t2,pos111,pos222,tm,tau,Kp,err,rr] = metodoDosPuntos_ModeloDeSegundoMasTiempoMuertoOrdenHo(x,ts);
                 set(handles.tfs,'String','   ');
                 set(handles.param,'string',{'Tm < 0','  '})
                 
@@ -268,7 +270,7 @@ switch Mtdo
                 num=strcat(char(vpa(poly2sym(Gm.num{1,1},s),3)),'*exp(-',num2str(Gm.OutputDelay),'*s)');
                 bar=strcat('-------------------------');
                 deno=strcat(char(vpa(poly2sym(Gm.den{1,1},s),3)));
-                TF={num;bar;deno}; %función de transferencia(String)
+                TF={num;bar;deno}; %funciï¿½n de transferencia(String)
                 set(handles.tfs,'String',TF);
                 a=strcat('Tm:  ',' ',num2str(tm));
                 b=strcat('tau: ',' ',num2str(tau));
@@ -289,7 +291,7 @@ switch Mtdo
         num=strcat(char(vpa(poly2sym(Gm.num{1,1},s),3)),'*exp(-',num2str(Gm.OutputDelay),'*s)');
         bar=strcat('-------------------------');
         deno=strcat(char(vpa(poly2sym(Gm.den{1,1},s),3)));
-        TF={num;bar;deno}; %función de transferencia(String)
+        TF={num;bar;deno}; %funciï¿½n de transferencia(String)
         set(handles.tfs,'String',TF);
         a=strcat('Tm:  ',' ',num2str(tm));
         b=strcat('tau: ',' ',num2str(tau));
@@ -398,43 +400,49 @@ function Graf_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 b = get(handles.popupmenu1, 'Value');
-global Gm1 ts x u iii Mtdo
+global Gm1 ts x u iii Mtdo pos1 pos11 pos111 pos2 pos22 pos222
 switch b
     case 1
         hold off
         plot(ts,x,'r')
-         legend('Señal ingresada')
+         legend('Seï¿½al ingresada')
        
     case 2
         hold off
         plot(ts,x,'r');hold on
-        step(Gm1,ts(end))
-        legend('Señal ingresada','Señal aproximada ')
+        step(Gm1,ts)
+        legend('Seï¿½al ingresada','Seï¿½al aproximada ')
 
     case 3
         if Mtdo==1
             hold off
             plot(ts,x,'r');hold on
             %Agregar los puntos detectados en el metodo
-            legend('Señal ingresada')
+            legend('Seï¿½al ingresada')
         end
         if Mtdo==2
             hold off
             plot(ts,x,'r');hold on
             %Agregar los puntos detectados en el metodo
-            legend('Señal ingresada')
+            plot(x,x(pos1),'ok');hold on
+            plot(x,x(pos2),'ok');hold on
+            legend('Seï¿½al ingresada','t1','t2')            
         end
         if Mtdo==3
             hold off
             plot(ts,x,'r');hold on
             %Agregar los puntos detectados en el metodo
-            legend('Señal ingresada')
+            plot(x,x(pos11),'ok');hold on
+            plot(x,x(pos22),'ok');hold on
+            legend('Seï¿½al ingresada','t1','t2')
         end
         if Mtdo==4
             hold off
             plot(ts,x,'r');hold on
             %Agregar los puntos detectados en el metodo
-            legend('Señal ingresada')
+            plot(x,x(pos111),'ok');hold on
+            plot(x,x(pos222),'ok');hold on
+            legend('Seï¿½al ingresada','t1','t2')
         end
         if Mtdo==5
             hold off
@@ -442,7 +450,12 @@ switch b
             plot(ts(1:end-2),u,'g');hold on
             plot(ts(iii),x(iii),'ok')
             ylim([-0.1 x(end)+0.1])
-            legend('Señal ingresada','Recta tangente','Punto de Inflexión')
+            legend('Seï¿½al ingresada','Recta tangente','Punto de Inflexiï¿½n')
         end
         
 end
+% --- Executes on button press in Save.
+function Save_Callback(hObject, eventdata, handles)
+% hObject    handle to Save (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)

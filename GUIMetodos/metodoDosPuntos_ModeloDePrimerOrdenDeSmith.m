@@ -1,22 +1,22 @@
-function [Gm,tm,tau,t28,t63,Kp,err] = metodoDosPuntos_ModeloDePrimerOrdenDeSmith(x,ts)
+function [Gm,tm,tau,t28,pos11,pos22,t63,Kp,err] = metodoDosPuntos_ModeloDePrimerOrdenDeSmith(x,ts)
 t=ts;C_t=x;
 p1=0.283;
 p2=0.632;
 SetPoint=C_t(end);
-pos=0;
+pos11=0;
 for i=1:1:length(C_t)
 if C_t(i)<SetPoint*p1
-pos=i;
+pos11=i;
 end    
 end
-t28=t(pos);
-pos=0;
+t28=t(pos11);
+pos22=0;
 for i=1:1:length(C_t)
 if C_t(i)<SetPoint*p2
-pos=i;
+pos22=i;
 end    
 end
-t63=t(pos);
+t63=t(pos22);
 tao=1.5*(t63-t28);
 tm=t63-tao;
 %% Modelo de primer orden

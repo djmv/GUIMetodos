@@ -1,4 +1,4 @@
-function [Gm,t1,t2,tm,tau,Kp,err,rr] = metodoDosPuntos_ModeloDeSegundoMasTiempoMuertoOrdenHo(x,ts)
+function [Gm,t1,t2,pos111,pos222,tm,tau,Kp,err,rr] = metodoDosPuntos_ModeloDeSegundoMasTiempoMuertoOrdenHo(x,ts)
 %% Metodo de Ho polo doble
 t=ts;C_t=x;rr=1;
 a=-0.463;
@@ -8,34 +8,34 @@ d=-0.574;
 p1=0.35;
 p2=0.85;
 SetPoint=C_t(end);
-pos=0;
+pos111=0;
 for i=1:1:length(C_t)
 if C_t(i)<SetPoint*p1
-pos=i;
+pos111=i;
 end    
 end
-t1=t(pos);
-pos=0;
+t1=t(pos111);
+pos222=0;
 for i=1:1:length(C_t)
 if C_t(i)<SetPoint*p2
-pos=i;
+pos222=i;
 end    
 end
-t2=t(pos);
+t2=t(pos222);
 tao=a*t1+b*t2;
 tm=c*t1+d*t2;
-%% Modelo de segundo más tiempo muerto orden-Ho
+%% Modelo de segundo mï¿½s tiempo muerto orden-Ho
 hold on
 s=tf('s');
 if(tm<0)
     
-    errordlg('Tiempo muerto negativo, no se puede aplicar el método de Ho con polo doble');
+    errordlg('Tiempo muerto negativo, no se puede aplicar el mï¿½todo de Ho con polo doble');
     Gm=1;tau=1;Kp=1;err=0;
     
 else
     Gp_Ho2 = exp(-tm*s)/(tao*s+1)^2;
     %step(Gp_Ho2);
-    title('respuesta al escalón');
+    title('respuesta al escalï¿½n');
     %% Criterio de Error
     y=C_t;
     y1=step(Gp_Ho2,t);

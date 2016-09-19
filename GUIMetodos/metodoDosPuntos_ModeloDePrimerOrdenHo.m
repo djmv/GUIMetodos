@@ -1,5 +1,5 @@
-function [Gm,tm,tau,Kp,err] = metodoDosPuntos_ModeloDePrimerOrdenHo(x,ts)
-%% Método de Ho
+function [Gm,tm,t1,t2,pos1,pos2,tau,Kp,err] = metodoDosPuntos_ModeloDePrimerOrdenHo(x,ts)
+%% Mï¿½todo de Ho
 t=ts;C_t=x;
 a=-0.670;
 b=0.670;
@@ -8,20 +8,20 @@ d=-0.29;
 p1=0.35;
 p2=0.85;
 SetPoint=C_t(end);
-pos=0;
+pos1=0;
 for i=1:1:length(C_t)
 if C_t(i)<SetPoint*p1
-pos=i;
+pos1=i;
 end    
 end
-t1=t(pos);
-pos=0;
+t1=t(pos1);
+pos2=0;
 for i=1:1:length(C_t)
 if C_t(i)<SetPoint*p2
-pos=i;
+pos2=i;
 end    
 end
-t2=t(pos);
+t2=t(pos2);
 tao=a*t1+b*t2;
 tm=c*t1+d*t2;
 %% Modelo de primer orden-Ho
