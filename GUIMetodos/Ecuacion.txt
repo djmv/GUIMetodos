@@ -1,0 +1,4 @@
+La respuesta obtenida es:
+  1.03*exp(-0.85192*s) 
+-----------
+ 1.65*s + 1.45*s^2 + 1.0

@@ -482,11 +482,13 @@ function Save_Callback(hObject, eventdata, handles)
 % legend('Señal ingresada','Señal aproximada ')
 global GM ts x
 A = [ts; x];
+disp(GM);
 Gm=GM;
- syms s;
- num=strcat(char(vpa(poly2sym(Gm.num{1,1},s),3)),'*exp(-',num2str(Gm.OutputDelay),'*s)');
- deno=strcat(char(vpa(poly2sym(Gm.den{1,1},s),3)));
-%num='hola';deno='como estas';
+% disp(Gm)
+% syms s;
+% num=strcat(char(vpa(poly2sym(Gm.num{1,1},s),3)),'*exp(-',num2str(Gm.OutputDelay),'*s)');
+% deno=strcat(char(vpa(poly2sym(Gm.den{1,1},s),3)));
+num='hola';deno='como estas';
 fileID = fopen('Ecuacion.txt','w');
 formatSpec = 'La respuesta obtenida es:\n  %s \n-----------\n %s';
 fprintf(fileID,formatSpec,num,deno);
@@ -497,7 +499,7 @@ fprintf(fileID,'%6s %12s\n','t','g(t)');
 fprintf(fileID,'%6.2f %12.8f\n',A);
 fclose(fileID);
 clear gm
-saveas(handles.Signal,'Sistema.fig')
+%saveas(handles.Signal,'Sistema.fig')
 
 % --- Executes on button press in pushbutton6.
 function pushbutton6_Callback(hObject, eventdata, handles)
@@ -553,29 +555,29 @@ e='Modelo tangente';
 if(Vmin==1)
 f=a;
 plot(ts,Gm11,'m','linewidth',2,'parent',handles.Signal);hold on
-GM=Gm1;
+GM=Gm11;
 legend(a)
 end;
 if(Vmin==2)
 f=b;
 plot(ts,Gm22,'m','linewidth',2,'parent',handles.Signal);hold on
-GM=Gm2;
+GM=Gm22;
 end;
 if(Vmin==3)
 f=c;
 plot(ts,Gm33,'m','linewidth',2,'parent',handles.Signal);hold on
-GM=Gm3;
+GM=Gm33;
 end;
 if(Vmin==4)
 f=d;
 plot(ts,Gm44,'m','linewidth',2,'parent',handles.Signal);hold on
-GM=Gm4;
+GM=Gm44;
 end;
 if(Vmin==5)
 f=e;
 if Tp == 0
 plot(ts,Gm55,'m','linewidth',2,'parent',handles.Signal);hold on
-GM=Gm5;
+GM=Gm55;
 end
 end;
 if Tp == 1
