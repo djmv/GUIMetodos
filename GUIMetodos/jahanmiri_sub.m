@@ -1,4 +1,4 @@
-function [Gm,tm,tau,Kp,err] = jahanmiri_sub(sig,time)
+function [Gm,tm,tau,Kp,err,t_r,T_I] = jahanmiri_sub(sig,time)
 tol=0.01;
 y=sig;ts=time;
 set=y(end);
@@ -34,4 +34,6 @@ Gm=(Kp*exp(-tm*s))/(thau^2*s^2+2*dseta*thau*s+1);
 y1=step(Gm,ts);
 iae=trapz(ts,abs(y-y1'));
 err=iae;%Criterio de Error
+t_r=[tr y(i)];
+T_I=[TI y(pos(1))];
 end

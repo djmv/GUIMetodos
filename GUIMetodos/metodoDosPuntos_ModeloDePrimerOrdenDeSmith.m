@@ -5,16 +5,16 @@ p2=0.632;
 SetPoint=C_t(end);
 pos11=0;
 for i=1:1:length(C_t)
-if C_t(i)<SetPoint*p1
-pos11=i;
-end    
+    if C_t(i)<SetPoint*p1
+        pos11=i;
+    end
 end
 t28=t(pos11);
 pos22=0;
 for i=1:1:length(C_t)
-if C_t(i)<SetPoint*p2
-pos22=i;
-end    
+    if C_t(i)<SetPoint*p2
+        pos22=i;
+    end
 end
 t63=t(pos22);
 tao=1.5*(t63-t28);

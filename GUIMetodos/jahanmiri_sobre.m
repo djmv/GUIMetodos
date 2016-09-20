@@ -1,4 +1,4 @@
-function [Gm,tm,tau,Kp,err,cri] = jahanmiri_sobre(sig,time)
+function [Gm,tm,tau,Kp,err,cri,ind2,ind5,ind70,ind90] = jahanmiri_sobre(sig,time)
 tol=0.01;
 y=sig;
 ts=time;
