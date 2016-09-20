@@ -187,13 +187,18 @@ switch Mtdo
             num=strcat(char(vpa(poly2sym(Gm.num{1,1},s),3)),'*exp(-',num2str(Gm.OutputDelay),'*s)');
             bar=strcat('-------------------------');
             deno=strcat(char(vpa(poly2sym(Gm.den{1,1},s),3)));
+            norm=Gm.den{1,1}./Gm.den{1,1}(1);
+            cita=norm(2)/(2*norm(3));
+            own=sqrt(norm(3));
             TF={num;bar;deno}; %función de transferencia(String)
             set(handles.tfs,'String',TF);
             a=strcat('Tm:  ',' ',num2str(tm));
             b=strcat('tau: ',' ',num2str(tau));
             c=strcat('Kp: ',' ',num2str(Kp));
             d=strcat('Error(IAE): ',' ',num2str(errJaha1));
-            xo = {a;b;c;d};
+            g=strcat('zetha: ',' ',num2str(cita));
+            h=strcat('Wn: ',' ',num2str(own));
+            xo = {a;b;c;g;h;d};
             set(handles.param,'string',xo)
         elseif Tp == 0
             %Jahanmiri sobre
@@ -205,13 +210,18 @@ switch Mtdo
                 num=strcat(char(vpa(poly2sym(Gm.num{1,1},s),3)),'*exp(-',num2str(Gm.OutputDelay),'*s)');
                 bar=strcat('-------------------------');
                 deno=strcat(char(vpa(poly2sym(Gm.den{1,1},s),3)));
+                norm=Gm.den{1,1}./Gm.den{1,1}(1);
+                cita=norm(2)/(2*norm(3));
+                own=sqrt(norm(3));
                 TF={num;bar;deno}; %función de transferencia(String)
                 set(handles.tfs,'String',TF);
                 a=strcat('Tm:  ',' ',num2str(tm));
                 b=strcat('tau: ',' ',num2str(tau));
                 c=strcat('Kp: ',' ',num2str(Kp));
                 d=strcat('Error(IAE): ',' ',num2str(errJaha2));
-                xo = {a;b;c;d};
+                g=strcat('zetha: ',' ',num2str(cita));
+                h=strcat('Wn: ',' ',num2str(own));
+                xo = {a;b;c;g;h;d};
                 set(handles.param,'string',xo)
                 
                 
@@ -268,6 +278,10 @@ switch Mtdo
         num=strcat(char(vpa(poly2sym(Gm.num{1,1},s),3)),'*exp(-',num2str(Gm.OutputDelay),'*s)');
         bar=strcat('-------------------------');
         deno=strcat(char(vpa(poly2sym(Gm.den{1,1},s),3)));
+        norm=Gm.den{1,1}./Gm.den{1,1}(1);
+        cita=norm(2)/(2*norm(3));
+        own=sqrt(norm(3));
+        %disp(cita)
         TF={num;bar;deno}; %función de transferencia(String)
         set(handles.tfs,'String',TF);
         a=strcat('Tm:  ',' ',num2str(tm));
@@ -276,7 +290,9 @@ switch Mtdo
         d=strcat('t28: ',' ',num2str(t1));
         e=strcat('t63: ',' ',num2str(t2));
         f=strcat('Error(IAE): ',' ',num2str(errHo2));
-        xo = {a;b;c;d;e;f};
+        g=strcat('zetha: ',' ',num2str(cita));
+        h=strcat('Wn: ',' ',num2str(own));
+        xo = {a;b;c;g;h;d;e;f};
         set(handles.param,'string',xo)
         
     case 5
@@ -418,6 +434,7 @@ switch b
             if Tp == 1
                 plot(t_r(1),t_r(2),'Ob');
                 plot(t_i(1),t_i(2),'Om');
+                plot(t(find(max(x)==x)),t_i(2),'Om');
                 legend('Señal ingresada','tiempo de subida','tiempo de inflexión')
             else
                 if cri == 2
@@ -482,13 +499,11 @@ function Save_Callback(hObject, eventdata, handles)
 % legend('Señal ingresada','Señal aproximada ')
 global GM ts x
 A = [ts; x];
-disp(GM);
 Gm=GM;
-% disp(Gm)
-% syms s;
-% num=strcat(char(vpa(poly2sym(Gm.num{1,1},s),3)),'*exp(-',num2str(Gm.OutputDelay),'*s)');
-% deno=strcat(char(vpa(poly2sym(Gm.den{1,1},s),3)));
-num='hola';deno='como estas';
+ syms s;
+ num=strcat(char(vpa(poly2sym(Gm.num{1,1},s),3)),'*exp(-',num2str(Gm.OutputDelay),'*s)');
+ deno=strcat(char(vpa(poly2sym(Gm.den{1,1},s),3)));
+%num='hola';deno='como estas';
 fileID = fopen('Ecuacion.txt','w');
 formatSpec = 'La respuesta obtenida es:\n  %s \n-----------\n %s';
 fprintf(fileID,formatSpec,num,deno);
@@ -499,7 +514,7 @@ fprintf(fileID,'%6s %12s\n','t','g(t)');
 fprintf(fileID,'%6.2f %12.8f\n',A);
 fclose(fileID);
 clear gm
-%saveas(handles.Signal,'Sistema.fig')
+saveas(handles.Signal,'Sistema.fig')
 
 % --- Executes on button press in pushbutton6.
 function pushbutton6_Callback(hObject, eventdata, handles)
@@ -555,29 +570,29 @@ e='Modelo tangente';
 if(Vmin==1)
 f=a;
 plot(ts,Gm11,'m','linewidth',2,'parent',handles.Signal);hold on
-GM=Gm11;
+GM=Gm1;
 legend(a)
 end;
 if(Vmin==2)
 f=b;
 plot(ts,Gm22,'m','linewidth',2,'parent',handles.Signal);hold on
-GM=Gm22;
+GM=Gm2;
 end;
 if(Vmin==3)
 f=c;
 plot(ts,Gm33,'m','linewidth',2,'parent',handles.Signal);hold on
-GM=Gm33;
+GM=Gm3;
 end;
 if(Vmin==4)
 f=d;
 plot(ts,Gm44,'m','linewidth',2,'parent',handles.Signal);hold on
-GM=Gm44;
+GM=Gm4;
 end;
 if(Vmin==5)
 f=e;
 if Tp == 0
 plot(ts,Gm55,'m','linewidth',2,'parent',handles.Signal);hold on
-GM=Gm55;
+GM=Gm5;
 end
 end;
 if Tp == 1

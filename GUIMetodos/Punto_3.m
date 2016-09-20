@@ -187,13 +187,18 @@ switch Mtdo
             num=strcat(char(vpa(poly2sym(Gm.num{1,1},s),3)),'*exp(-',num2str(Gm.OutputDelay),'*s)');
             bar=strcat('-------------------------');
             deno=strcat(char(vpa(poly2sym(Gm.den{1,1},s),3)));
+            norm=Gm.den{1,1}./Gm.den{1,1}(1);
+            cita=norm(2)/(2*norm(3));
+            own=sqrt(norm(3));
             TF={num;bar;deno}; %función de transferencia(String)
             set(handles.tfs,'String',TF);
             a=strcat('Tm:  ',' ',num2str(tm));
             b=strcat('tau: ',' ',num2str(tau));
             c=strcat('Kp: ',' ',num2str(Kp));
             d=strcat('Error(IAE): ',' ',num2str(errJaha1));
-            xo = {a;b;c;d};
+            g=strcat('zetha: ',' ',num2str(cita));
+            h=strcat('Wn: ',' ',num2str(own));
+            xo = {a;b;c;g;h;d};
             set(handles.param,'string',xo)
         elseif Tp == 0
             %Jahanmiri sobre
@@ -205,13 +210,18 @@ switch Mtdo
                 num=strcat(char(vpa(poly2sym(Gm.num{1,1},s),3)),'*exp(-',num2str(Gm.OutputDelay),'*s)');
                 bar=strcat('-------------------------');
                 deno=strcat(char(vpa(poly2sym(Gm.den{1,1},s),3)));
+                norm=Gm.den{1,1}./Gm.den{1,1}(1);
+                cita=norm(2)/(2*norm(3));
+                own=sqrt(norm(3));
                 TF={num;bar;deno}; %función de transferencia(String)
                 set(handles.tfs,'String',TF);
                 a=strcat('Tm:  ',' ',num2str(tm));
                 b=strcat('tau: ',' ',num2str(tau));
                 c=strcat('Kp: ',' ',num2str(Kp));
                 d=strcat('Error(IAE): ',' ',num2str(errJaha2));
-                xo = {a;b;c;d};
+                g=strcat('zetha: ',' ',num2str(cita));
+                h=strcat('Wn: ',' ',num2str(own));
+                xo = {a;b;c;g;h;d};
                 set(handles.param,'string',xo)
                 
                 
@@ -268,6 +278,10 @@ switch Mtdo
         num=strcat(char(vpa(poly2sym(Gm.num{1,1},s),3)),'*exp(-',num2str(Gm.OutputDelay),'*s)');
         bar=strcat('-------------------------');
         deno=strcat(char(vpa(poly2sym(Gm.den{1,1},s),3)));
+        norm=Gm.den{1,1}./Gm.den{1,1}(1);
+        cita=norm(2)/(2*norm(3));
+        own=sqrt(norm(3));
+        %disp(cita)
         TF={num;bar;deno}; %función de transferencia(String)
         set(handles.tfs,'String',TF);
         a=strcat('Tm:  ',' ',num2str(tm));
@@ -276,7 +290,9 @@ switch Mtdo
         d=strcat('t28: ',' ',num2str(t1));
         e=strcat('t63: ',' ',num2str(t2));
         f=strcat('Error(IAE): ',' ',num2str(errHo2));
-        xo = {a;b;c;d;e;f};
+        g=strcat('zetha: ',' ',num2str(cita));
+        h=strcat('Wn: ',' ',num2str(own));
+        xo = {a;b;c;g;h;d;e;f};
         set(handles.param,'string',xo)
         
     case 5
@@ -418,7 +434,8 @@ switch b
             if Tp == 1
                 plot(t_r(1),t_r(2),'Ob');
                 plot(t_i(1),t_i(2),'Om');
-                legend('Señal ingresada','tiempo de subida','tiempo de inflexión')
+                plot(ts(find(max(x)==x)), max(x) ,'Ok');
+                legend('Señal ingresada','tiempo de subida','tiempo de inflexión','Máximo')
             else
                 if cri == 2
                     plot(ind2(1),ind2(2),'Ok');
