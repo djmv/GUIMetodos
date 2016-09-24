@@ -34,12 +34,8 @@ Gm2=(set*exp(-tm2*s))/(thau2^2*s^2+2*dseta2*thau2*s+1); % FT tm=5%
 y2=step(Gm2,time);
 yp1=abs(y-y1');
 yp2=abs(y-y2');
-if length(y) == length(y1)
 iae1=trapz(time,yp1); %Criterio de Error tm = 2%
 iae2=trapz(time,yp2); %Criterio de Error tm = 5%
-else
-    iae1=50;
-end
 % iae1=49;
 % iae2=4;
 Kp=set;
