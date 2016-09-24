@@ -172,8 +172,7 @@ b1='Señal de entrada con Señal aproximada ';
 c1='Señal de entrada con puntos  detectados para aproximación  ';
 aa={a1;b1;c1};
 set(handles.popupmenu1, 'String', aa);
-global Tp sr ts Gm1  u iii Mtdo errJaha1 errJaha2 errsmith errHo errHo2 pos1 pos11 pos111 pos2 pos22 pos222 t_r t_i ind2 ind5 ind70 ind90 cri;
-x=sr; % x = señal resultante
+global Tp x ts Gm1  u iii Mtdo errJaha1 errJaha2 errsmith errHo errHo2 pos1 pos11 pos111 pos2 pos22 pos222 t_r t_i ind2 ind5 ind70 ind90 cri;
 Mtdo = get(handles.Lista,'Value');
 file_list = get(handles.Lista,'String');
 disp(file_list(Mtdo))
@@ -415,8 +414,7 @@ function Graf_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 b = get(handles.popupmenu1, 'Value');
-global Gm1 ts sr u iii Mtdo pos1 pos11 pos111 pos2 pos22 pos222 t_r t_i ind2 ind5 ind70 ind90 Tp cri
-x=sr; % x = señal resultante
+global Gm1 ts x u iii Mtdo pos1 pos11 pos111 pos2 pos22 pos222 t_r t_i ind2 ind5 ind70 ind90 Tp cri
 switch b
     case 1
         hold off
@@ -499,8 +497,7 @@ function Save_Callback(hObject, eventdata, handles)
 % plot(ts,x); hold on
 % step(Gm1,ts)
 % legend('Señal ingresada','Señal aproximada ')
-global GM ts sr
-x=sr;
+global GM ts x
 A = [ts; x];
 Gm=GM;
  syms s;
@@ -524,8 +521,7 @@ function pushbutton6_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton6 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-global Tp sr ts GM
-x=sr;
+global Tp x ts GM
 cla
 if Tp == 1
     %Jahanmiri sub
@@ -665,8 +661,7 @@ a1='Señal escalada';
 b1='Señal sin huecos ';
 c1='Señal suavizada';
 d1='Señal suavizada Vs Original';
-e1='Señal Resultante';
-aa={a1;b1;c1;d1;e1};
+aa={a1;b1;c1;d1};
 set(hObject, 'String', aa);
 
 % --- Executes on button press in pushbutton7.
@@ -680,8 +675,7 @@ escl=escalamiento(x); % Señal escalda.
 ssig=suavizado(x);  % Señal Suavizada.
 cla;
 sr=suavizado(escl); % Señal resultante escalada suavida.
-% Señal resultante debe ser rellenada luego escalada ...
-% y luego suavizada para obtener un buen resultado.
+% Señal r
 switch b
     case 1
         plot(ts,escl)
@@ -693,7 +687,5 @@ switch b
         plot(ts,ssig)
         hold on
         plot(ts,x,'R')
-    case 5
-        plot(ts,sr)
 end
 
